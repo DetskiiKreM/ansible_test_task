@@ -1,0 +1,25 @@
+---
+#Из условия заданиря следует, что не нужно прерывать дальнейшее выполнение плейбука, при невыполнении условий ниже
+- name: Check free space on root fs
+  ansible.builtin.shell: df --output=avail / | tail -n 1
+  register: free_space
+  failed_when: free_space.stdout_lines[0] | int < 10485760
+  changed_when: false
+  ignore_errors: true
+
+- name: Notify if free space check failed
+  ansible.builtin.debug:
+    msg: "WARNING: {{ ansible_hostname }} free space on the root filesystem is less than 10GB."
+  when: free_space.failed
+
+- name: Check tmp fs record option
+  ansible.builtin.shell: grep -E '^/tmp\s' /etc/fstab | grep -qE '\bexec\b'
+  register: tmp_exec
+  failed_when: tmp_exec.rc != 0
+  changed_when: false
+  ignore_errors: true
+
+- name: Notify if tmp fs option record check failed
+  ansible.builtin.debug:
+    msg: "WARNING: {{ ansible_hostname }} there is no exec option for /tmp."
+  when: tmp_exec.failed

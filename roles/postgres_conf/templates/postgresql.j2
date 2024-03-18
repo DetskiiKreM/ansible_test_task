@@ -1,0 +1,12 @@
+postgresql:
+    parameters:
+        max_connections: {{ max_connections }}
+        max_locks_per_transaction: '64'
+        max_worker_processes: {{ max_worker_processes }}
+        max_prepared_transactions: '{{ max_prepared_transactions }}'
+        wal_level: 'replica'
+        wal_log_hints: on
+        track_commit_timestamp: off
+        wal_keep_size: '8GB'
+        logical_decoding_work_mem: {{ logical_decoding_work_mem }}
+        auth_activity_period: '60'

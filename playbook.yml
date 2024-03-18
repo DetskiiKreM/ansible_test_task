@@ -1,0 +1,11 @@
+---
+- name: Configure VM environments
+  hosts: test_srv
+  gather_facts: true
+  become: true
+  
+  roles:
+    - prechecks
+    - rhel_packages
+    - ubuntu_packages
+    - postgres_conf

@@ -1,0 +1,26 @@
+---
+- name: Check if /etc/postgres/ directory exists
+#Хоть из задания напрашивается, что данная директория уже существует, на всякий случай добавим проверку и создание
+  ansible.builtin.stat:
+    path: /etc/postgres
+  register: postgres_dir
+
+- name: Create /etc/postgres/ directory if it does not exist
+  ansible.builtin.file:
+    path: /etc/postgres
+    state: directory
+  when: not postgres_dir.stat.exists
+
+- name: Template PostgreSQL conf file
+  ansible.builtin.template:
+    src: postgresql.j2
+    dest: /etc/postgres/test_config.conf
+    owner: postgres
+    group: postgres
+    mode: '0644'
+  vars:
+    max_connections: "{{ ansible_processor_cores * 5 }}"
+    max_worker_processes: "{{ ansible_processor_cores * 3 }}"
+    max_prepared_transactions: "{{ (ansible_distribution == 'Ubuntu') | ternary(ansible_processor_cores * 6, ansible_processor_cores * 4) }}"
+    logical_decoding_work_mem: "{{ ansible_memtotal_mb / 4096 }} GB"
+  notify: restart_postgresql

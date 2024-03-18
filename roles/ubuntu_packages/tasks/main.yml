@@ -1,0 +1,21 @@
+---
+- name: Install required packages for Ubuntu
+  ansible.builtin.package:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - autoconf
+    - automake
+    - jq
+    - libcrack2
+    - libcurl
+    - libjsoncpp
+    - libtool
+    - libyaml-0-2
+    - logrotate
+    - openssl
+    - perl-openssl-defaults
+    - python3-pip
+    - python3.6
+    - python3.6-dev
+  when: ansible_distribution == 'Ubuntu'

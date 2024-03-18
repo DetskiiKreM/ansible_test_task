@@ -1,0 +1,24 @@
+---
+- name: Install required packages for RHEL
+  ansible.builtin.package:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - expect
+    - jq
+    - jsoncpp
+    - libcurl
+    - libyaml
+    - logrotate
+    - nmap
+    - openssl
+    - perl-DBD-Pg
+    - perl-DBI
+    - perl-Time-HiRes
+    - python3-pip
+    - python36
+    - python36-devel
+    - python36-virtualenv
+    - rsyslog
+    - uuid
+  when: ansible_distribution == 'RedHat'
